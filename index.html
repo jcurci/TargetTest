@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação de Soma</title>
+</head>
+<body>
+    <!--Teste 1 -->
+    <h2>- Teste 1 <br>Resultado da Soma:</h2>
+
+    <p id="resultado-soma"></p>  <!--Aqui vemos o resultado exibido-->
+
+    <!-- Teste 1 acaba aqui -->
+
+    <!-- Teste 2 -->
+
+    <h2>- Teste 2<br>Sequência de Fibonacci: </h2>
+
+    <input type="number" id="input" placeholder="Digite um número">
+    <button onClick="verificarFibonacci()">Verificar</button>
+    <p id="resultado-fibonacci"></p>
+
+    <!-- Teste 2 acaba aqui -->
+
+    <!-- Teste 3 -->
+
+     <h2>- Teste 3 <br> Faturamento:</h2>
+
+    <!-- exbindo os dados -->
+    <pre id="dados-json"></pre> 
+
+
+    <!-- Exibição dos resultados -->
+    <p id="menor-faturamento"></p>
+    <p id="maior-faturamento"></p>
+    <p id="dias-acima-media"></p>
+
+     <!-- Teste 3 acaba aqui -->
+
+     <!-- Teste 4 -->
+
+    <h2>- Teste 4 <br>Faturamento e Percentual: </h2>
+    <div id="resultados"></div>
+
+     <!-- Teste 4 acaba aqui -->
+
+     <!-- Teste 5 -->
+
+     <h2>- Teste 5 <br>Invertendo String: </h2>
+
+    <label for="entrada">Digite uma palavra:</label>
+    <input type="text" id="entrada" placeholder="Digite aqui...">
+    <button onClick="inverterString()">Inverter</button>
+    
+    <p><strong>Resultado:</strong> <span id="resultado"></span></p>
+
+     <!-- Teste 5 acaba aqui -->
+
+    <script>
+
+        //Teste 1 Script
+
+        let soma = 0; // Iniciamos a conta em 0
+
+        for (let i = 1; i <= 13; i++) { //realizando um loop de 1 até 13
+
+            soma += i; //A cada 'FOR' adicionamos o valor de 'i' que garante que estamos somando todos os números, um de cada vez
+        }
+        document.getElementById("resultado-soma").innerText = `O valor da soma é: ${soma}`;
+
+        // Teste 1 Script acaba aqui
+
+        //Teste 2 Script
+
+        function fibonacci(num) { //criando a função para cálculo e verificação
+            let fibo = [0, 1]; // aqui setamos os 2 primeiros números para iniciar a sequência
+            let i = 2;  // começa o cálculo a partir do terceiro número da sequência
+
+            while (fibo[i - 1] < num) {
+                fibo[i] = fibo[i - 1] + fibo[i - 2]; 
+                i++;
+            }
+
+            if (fibo.includes(num)) {
+                return `O número ${num} pertence à sequência de Fibonacci.`;
+            } else {
+                return `O número ${num} NÃO pertence à sequência de Fibonacci.`;
+            }
+        }
+
+        // Função para verificar a entrada do usuário
+        function verificarFibonacci() {
+            let numero = document.getElementById("input").value; // obtém o número inserido pelo usuário
+            let resultado = fibonacci(Number(numero)); // chama a função fibonacci e armazena o resultado
+
+            document.getElementById("resultado-fibonacci").innerText = resultado; // exibe o resultado para o usuário
+        }
+
+        //Teste 2 acaba aqui
+
+        //Teste 3 Script
+
+       // Função para calcular o faturamento
+       function calcularFaturamento(dados) {
+            // Filtra os dias com faturamento maior que 0
+            let diasFaturamento = dados.filter(dia => dia.valor > 0);
+            
+            // Menor faturamento
+            let menorFaturamento = Math.min(...diasFaturamento.map(dia => dia.valor));
+            
+            // Maior faturamento
+            let maiorFaturamento = Math.max(...diasFaturamento.map(dia => dia.valor));
+            
+            // Média de faturamento
+            let somaFaturamento = diasFaturamento.reduce((acc, dia) => acc + dia.valor, 0);
+            let mediaFaturamento = somaFaturamento / diasFaturamento.length;
+            
+            // Número de dias com faturamento superior à média
+            let diasAcimaMedia = diasFaturamento.filter(dia => dia.valor > mediaFaturamento).length;
+
+            // Exibe os resultados na tela
+            document.getElementById("menor-faturamento").innerText = `O menor faturamento no mês foi: R$ ${menorFaturamento.toFixed(2)}`;
+            document.getElementById("maior-faturamento").innerText = `O maior faturamento no mês foi: R$ ${maiorFaturamento.toFixed(2)}`;
+            document.getElementById("dias-acima-media").innerText = `O número de dias com faturamento superior à média mensal é: ${diasAcimaMedia}`;
+        }
+
+        // Carregar os dados do arquivo JSON
+        fetch('dados.json')
+            .then(response => response.json())
+            .then(dados => {
+                // Calcular e exibir os resultados
+                calcularFaturamento(dados);
+            })
+            .catch(error => console.error("Erro ao carregar arquivo JSON", error));
+
+        //Teste 3 acaba aqui
+
+        //Teste 4 Script
+
+        const faturamentoPorEstado = {
+            "SP": 67836.43,
+            "RJ": 36678.66,
+            "MG": 29229.88,
+            "ES": 27165.48,
+            "Outros": 19849.53
+        };
+        
+        // Calculando o faturamento total
+        const faturamentoTotal = Object.values(faturamentoPorEstado).reduce((acc, valor) => acc + valor, 0);
+        
+        // Função para calcular o percentual de cada estado
+        function calcularPercentuais() {
+            let resultados = '';
+            
+            for (let estado in faturamentoPorEstado) {
+                const valorFaturado = faturamentoPorEstado[estado];
+                const percentual = (valorFaturado / faturamentoTotal) * 100;
+                resultados += `${estado}: R$ ${valorFaturado.toFixed(2)} - ${percentual.toFixed(2)}%<br>`;
+            }
+            
+            return resultados;
+        }
+
+        // Exibindo os resultados
+        document.getElementById("resultados").innerHTML = calcularPercentuais();
+
+        //Teste 4 acaba aqui
+
+        //Teste 5 Script
+
+        // Função para inverter a string
+        function inverterString() {
+            // Obtém o valor da string inserida pelo usuário
+            let stringOriginal = document.getElementById("entrada").value;
+            
+            // Inverte a palavra
+            let stringInvertida = stringOriginal.split("").reverse().join("");
+            
+            // Exibe o resultado
+            document.getElementById("resultado").innerText = stringInvertida;
+        //Teste 5 acaba aqui
+        }
+
+    </script>
+</body>
+</html>
